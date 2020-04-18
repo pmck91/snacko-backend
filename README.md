@@ -1,24 +1,29 @@
-# README
+# SNACKO.LIFE
+Make life a snack
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+----
 
-Things you may want to cover:
+## About
+this is the API backend for snacko.life. It's just a simple api using json endpoints.
+Using Active Storage for files likely, and JWT with devise for auth. Front end is written in React and can be found [here](add link)
 
-* Ruby version
+#####TODO
+* Tags 
+    * List tags endpoint
+    * View By Tags
+* Edit Recipe endpoint
+    * Including editing steps + ingredients
+    * Deleting steps + ingredients
+    * Adding steps + ingredients
+* Add images to recipes
+* Users + auth + admin flag
+* Add comments to recipes
+* Pagination
+* Search endpoint
+* Tests
 
-* System dependencies
+######MAYBIES (probably nots tbh)
+* Add likes to Recipes
+* Add Favourite a Recipe 
+* Add User Profiles
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
