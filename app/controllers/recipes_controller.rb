@@ -10,6 +10,11 @@ class RecipesController < ApplicationController
     render :json => @recipe.to_json(:include => [:steps, :ingredients, :tags])
   end
 
+  def by_tag
+    @tag = Tag.find_by_value(params[:tag])
+
+  end
+
   def create
     params = recipe_params
     @recipe = {}
@@ -47,5 +52,6 @@ class RecipesController < ApplicationController
   def recipe_params
     params.require(:recipe).permit(:title, :description, :slug, steps: [:title, :body, :position], ingredients: [:name, :quantity, :measurement], tags: [:value])
   end
+
 
 end
