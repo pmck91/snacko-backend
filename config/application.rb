@@ -23,9 +23,9 @@ module Snacko
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
+    config.autoloader = :classic
     config.active_record.index_nested_attribute_errors = true
     config.api_only = true
-    config.load_defaults 6.0 and config.autoloader = :classic
 
     config.middleware.insert_before 0, Rack::Cors do
       allow do
