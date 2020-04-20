@@ -1,4 +1,4 @@
-# :hamburger: :pizza: :fries: SNACKO.LIFE - Make life a snack :fries: :pizza: :hamburger:
+# :hamburger: :pizza: :fried_shrimp: :fries: SNACKO.LIFE - Make life a snack :fries: :fried_shrimp: :pizza: :hamburger:
 
 ### About
 this is the API backend for snacko.life. It's just a simple api using json endpoints. JWT with Knock for auth. Front end is written in React and can be found [here](add link)
