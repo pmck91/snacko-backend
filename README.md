@@ -12,7 +12,6 @@ this is the API backend for snacko.life. It's just a simple api using json endpo
 * Add images to recipes
 * Add comments to recipes
 * Pagination
-* Search endpoint
 * Tests
 
 ##### DONE
@@ -24,6 +23,7 @@ this is the API backend for snacko.life. It's just a simple api using json endpo
     * ~~Deleting steps + ingredients~~
     * ~~Adding steps + ingredients~~
 * ~~Users + auth + admin flag~~
+* ~~Search endpoint~~
 
 
 ###### MAYBES (probably not's tbh)
