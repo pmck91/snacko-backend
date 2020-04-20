@@ -6,8 +6,8 @@ this is the API backend for snacko.life. It's just a simple api using json endpo
 ##### TODO
 * [ ] Add images to recipes
 * [ ] Add comments to recipes
-* [ ] Pagination
 * [ ] Tests
+* [x] Pagination
 * [x] Tags 
     * [x] List tags endpoint
     * [x] View By Tags

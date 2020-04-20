@@ -21,6 +21,10 @@ gem 'active_model_serializers', '~> 0.10.10'
 gem 'jwt', '~> 1.5', '>= 1.5.4'
 gem 'rack-cors'
 
+# pagination
+gem 'will_paginate', '~> 3.1', '>= 3.1.6'
+gem 'api-pagination', '~> 4.1', '>= 4.1.1'
+
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
 

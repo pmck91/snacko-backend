@@ -4,7 +4,8 @@ class RecipesController < ApplicationController
 
   def index
     @recipes = Recipe.all
-    render :json => render_recipe(@recipes)
+    paged_recipes = @recipes.paginate(page: params[:page], per_page: params[:per_page])
+    render :json => render_recipe(paged_recipes)
   end
 
   def show
@@ -14,13 +15,15 @@ class RecipesController < ApplicationController
 
   def search
     @recipes = Recipe.search(search_params[:query])
-    render json: {query: search_params[:query], recipes: JSON[render_search_recipe(@recipes)]}
+    paged_recipes = @recipes.paginate(page: params[:page], per_page: params[:per_page])
+    render json: {query: search_params[:query], recipes: JSON[render_search_recipe(paged_recipes)]}
   end
 
   def by_tag
     @tag = Tag.find_by_value(params[:tag])
     @recipes = Recipe.joins(:tags).where("tags.id", @tag.id)
-    render :json => render_recipe(@recipes)
+    paged_recipes = @recipes.paginate(page: params[:page], per_page: params[:per_page])
+    paginate :json => render_recipe(paged_recipes)
   end
 
   def create
