@@ -5,25 +5,30 @@ class RecipesController < ApplicationController
   def index
     @recipes = Recipe.all
     paged_recipes = @recipes.paginate(page: params[:page], per_page: params[:per_page])
-    render :json => render_recipe(paged_recipes)
+    render :json => paged_recipes, each_serializer: ShortRecipeSerializer
   end
 
   def show
     @recipe = Recipe.find_by slug: params[:slug]
-    render :json => render_recipe(@recipes)
+    render :json => @recipe
   end
 
   def search
     @recipes = Recipe.search(search_params[:query])
     paged_recipes = @recipes.paginate(page: params[:page], per_page: params[:per_page])
-    render json: {query: search_params[:query], recipes: JSON[render_search_recipe(paged_recipes)]}
+
+    render json: {
+        query: search_params[:query],
+        recipes: @recipes.map{|recipe| ShortRecipeSerializer.new(recipe) }
+    }
+    # render json: {query: search_params[:query], recipes: paged_recipes}
   end
 
   def by_tag
     @tag = Tag.find_by_value(params[:tag])
     @recipes = Recipe.joins(:tags).where("tags.id", @tag.id)
     paged_recipes = @recipes.paginate(page: params[:page], per_page: params[:per_page])
-    paginate :json => render_recipe(paged_recipes)
+    paginate :json => paged_recipes, each_serializer: ShortRecipeSerializer
   end
 
   def create
@@ -109,18 +114,6 @@ class RecipesController < ApplicationController
   end
 
   private
-
-  def render_recipe(recipes)
-    recipes.to_json(:include => [steps: {:except => [:created_at, :updated_at, :recipe_id]},
-                                 ingredients: {:except => [:created_at, :updated_at, :recipe_id]},
-                                 tags: {:except => [:created_at, :updated_at, :id]}],
-                    :except => [:updated_at])
-  end
-
-  def render_search_recipe(recipes)
-    recipes.to_json(:include => [tags: {:except => [:id, :created_at, :updated_at, :id]}],
-                    :except => [:id, :created_at, :updated_at])
-  end
 
   def destroy_steps(ids)
     ids.each do |id|
