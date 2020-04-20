@@ -12,6 +12,11 @@ class RecipesController < ApplicationController
     render :json => render_recipe(@recipes)
   end
 
+  def search
+    @recipes = Recipe.search(search_params[:query])
+    render json: {query: search_params[:query], recipes: JSON[render_search_recipe(@recipes)]}
+  end
+
   def by_tag
     @tag = Tag.find_by_value(params[:tag])
     @recipes = Recipe.joins(:tags).where("tags.id", @tag.id)
@@ -109,6 +114,11 @@ class RecipesController < ApplicationController
                     :except => [:updated_at])
   end
 
+  def render_search_recipe(recipes)
+    recipes.to_json(:include => [tags: {:except => [:id, :created_at, :updated_at, :id]}],
+                    :except => [:id, :created_at, :updated_at])
+  end
+
   def destroy_steps(ids)
     ids.each do |id|
       Step.find(id).destroy!
@@ -123,6 +133,10 @@ class RecipesController < ApplicationController
 
   def recipe_params
     params.require(:recipe).permit(:title, :description, :slug, steps: [:id, :title, :body, :position], ingredients: [:id, :name, :quantity, :measurement], tags: [:value])
+  end
+
+  def search_params
+    params.permit(:query)
   end
 
 end

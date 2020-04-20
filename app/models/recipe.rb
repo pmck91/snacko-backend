@@ -14,4 +14,9 @@ class Recipe < ApplicationRecord
   validates :title, presence: true
   validates :description, presence: true
 
+  def self.search(query)
+    key = "%#{query}%"
+    Recipe.where('title LIKE :term OR description LIKE :term', term: key).order(:title)
+  end
+
 end
