@@ -1,5 +1,7 @@
 class Step < ApplicationRecord
 
+  default_scope { order(position: :asc) }
+
   belongs_to :recipe
 
   validates :title, presence: true

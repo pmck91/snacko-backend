@@ -1,6 +1,6 @@
 class ShortRecipeSerializer < ActiveModel::Serializer
   include Rails.application.routes.url_helpers
-  attributes :id, :title, :recipe_url
+  attributes :id, :title, :difficulty, :recipe_url, :image_url
 
   has_many :tags
 
@@ -9,6 +9,11 @@ class ShortRecipeSerializer < ActiveModel::Serializer
   end
 
   def image_url
-    rails_blob_path(object.image, only_path: true)
+    if object.image.attached?
+      rails_blob_path(object.image, only_path: true)
+    else
+      ""
+    end
   end
 end
+   

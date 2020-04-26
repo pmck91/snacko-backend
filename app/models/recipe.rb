@@ -1,5 +1,9 @@
 class Recipe < ApplicationRecord
 
+  attribute :cooking_duration, :duration
+
+  enum difficulty: [:ez_peazy, :easy_enough, :grand, :tough, :hard_as_nails]
+
   has_many :ingredients, dependent: :destroy
   has_many :steps, dependent: :destroy
   has_and_belongs_to_many :tags

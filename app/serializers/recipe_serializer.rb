@@ -1,6 +1,6 @@
 class RecipeSerializer < ActiveModel::Serializer
   include Rails.application.routes.url_helpers
-  attributes :id, :title, :description, :recipe_url
+  attributes :id, :title, :description, :cooking_duration, :difficulty, :serves, :recipe_url, :image_url
 
   has_many :steps
   has_many :ingredients
@@ -11,6 +11,10 @@ class RecipeSerializer < ActiveModel::Serializer
   end
 
   def image_url
-    rails_blob_path(object.image, only_path: true)
+    if object.image.attached?
+      rails_blob_path(object.image, only_path: true)
+    else
+      ""
+    end
   end
 end

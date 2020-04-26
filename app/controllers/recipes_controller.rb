@@ -26,7 +26,7 @@ class RecipesController < ApplicationController
 
   def by_tag
     @tag = Tag.find_by_value(params[:tag])
-    @recipes = Recipe.joins(:tags).where("tags.id", @tag.id)
+    @recipes = @tag.recipes
     paged_recipes = @recipes.paginate(page: params[:page], per_page: params[:per_page])
     paginate :json => paged_recipes, each_serializer: ShortRecipeSerializer
   end
