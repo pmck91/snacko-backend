@@ -13,15 +13,34 @@ class RecipesController < ApplicationController
     render :json => @recipe
   end
 
+  def metadata
+    @recipes = Recipe.all.count
+    @tags = Tag.all
+
+    count_per_tag = []
+    @tags.each_with_index do |tag, i|
+      count_per_tag[i] = {
+          tag: tag.value,
+          count: tag.recipes.count
+      }
+    end
+
+    render :json => {count: @recipes, by_tag: count_per_tag}
+  end
+
   def search
-    @recipes = Recipe.search(search_params[:query])
+    if params[:c]
+      @recipes = Recipe.searchWithCategory(params[:q], params[:c])
+    else
+      @recipes = Recipe.search(params[:q])
+    end
     paged_recipes = @recipes.paginate(page: params[:page], per_page: params[:per_page])
 
     render json: {
-        query: search_params[:query],
-        recipes: @recipes.map{|recipe| ShortRecipeSerializer.new(recipe) }
+        query: params[:q],
+        category: params[:c],
+        recipes: paged_recipes.map { |recipe| ShortRecipeSerializer.new(recipe) }
     }
-    # render json: {query: search_params[:query], recipes: paged_recipes}
   end
 
   def by_tag
@@ -35,15 +54,25 @@ class RecipesController < ApplicationController
     post_params = recipe_params
     @recipe = {}
     ActiveRecord::Base.transaction do
-      @recipe = Recipe.create!(title: post_params[:title], description: post_params[:description], slug: post_params[:slug])
+      @recipe = Recipe.create!(title: post_params[:title],
+                               description: post_params[:description],
+                               difficulty: post_params[:difficulty],
+                               cook_time: post_params[:cook_time],
+                               prep_time: post_params[:prep_time],
+                               serves: post_params[:serves],
+                               slug: post_params[:slug])
 
       # save the steps
       post_params[:steps].each do |step|
         Step.create!(title: step[:title], body: step[:body], position: step[:position], recipe: @recipe)
       end
       # save the ingredients
-      post_params[:ingredients].each do |step|
-        Ingredient.create!(name: step[:name], quantity: step[:quantity], measurement: step[:measurement], recipe: @recipe)
+      post_params[:ingredients].each do |ingredient|
+        Ingredient.create!(name: ingredient[:name], quantity: ingredient[:quantity], measurement: ingredient[:measurement], recipe: @recipe)
+      end
+      # save the tools
+      post_params[:tools].each do |tool|
+        Tool.create!(name: tool[:name], recipe: @recipe)
       end
       # save or load the tags
       post_params[:tags].each do |tag|
@@ -84,6 +113,15 @@ class RecipesController < ApplicationController
           old_ingredient.update!(name: ingredient[:name], quantity: ingredient[:quantity], measurement: ingredient[:measurement])
         else
           Ingredient.create!(name: ingredient[:name], quantity: ingredient[:quantity], measurement: ingredient[:measurement], recipe: @recipe)
+        end
+      end
+      # save the tool or update tool
+      post_params[:tools].each do |tool|
+        if tool[:id]
+          old_tool = Tool.find(tool[:id])
+          old_tool.update!(name: tool[:name], recipe: @recipe)
+        else
+          Tool.create!(name: tool[:name])
         end
       end
       # save / remove / load the tags
@@ -128,7 +166,7 @@ class RecipesController < ApplicationController
   end
 
   def recipe_params
-    params.require(:recipe).permit(:title, :description, :slug, steps: [:id, :title, :body, :position], ingredients: [:id, :name, :quantity, :measurement], tags: [:value])
+    params.require(:recipe).permit(:title, :description, :difficulty, :cook_time, :prep_time, :serves, :slug, steps: [:id, :title, :body, :position], ingredients: [:id, :name, :quantity, :measurement], tools: [:name], tags: [:value])
   end
 
   def search_params

@@ -3,9 +3,10 @@ Rails.application.routes.draw do
   # recipes
   get '/recipes', to: 'recipes#index'
   get '/recipes/category/:tag', to: 'recipes#by_tag'
+  get 'recipes/metadata', to: 'recipes#metadata', as: 'metadata'
+  get '/recipes/search', to: 'recipes#search', as: 'search'
   get '/recipes/:slug', to: 'recipes#show', as: 'recipe'
 
-  post '/recipes/search', to: 'recipes#search', as: 'search'
   post '/recipes', to: 'recipes#create'
   post '/recipes/:id/attach', to: 'recipe_images#attach', as: 'attach_image'
   delete '/recipes/:id/delete', to: 'recipe_images#destroy', as: 'delete_image'
